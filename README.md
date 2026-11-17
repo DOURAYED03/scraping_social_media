@@ -1,6 +1,8 @@
 # Competitor Intelligence API
 
-An Express.js API that scrapes competitor videos from YouTube, TikTok, and Instagram Reels, analyzes their storytelling techniques using Claude AI, and sends structured data to n8n for content strategy automation.
+Express.js API that collects public competitor video metadata from YouTube, TikTok, and Instagram Reels, analyzes storytelling techniques with Claude AI, and optionally sends structured results to n8n for content-strategy automation.
+
+The committed implementation keeps the platform modules at the repository root (`youtube.js`, `tiktok.js`, `instagram.js`, and `storytelling.js`).
 
 ## Setup
 
@@ -36,6 +38,8 @@ RAPIDAPI_KEY=your_key_here   # needed for TikTok + Instagram
 ```bash
 node server.js
 ```
+
+The server listens on `PORT` (default `3000`).
 
 ---
 
@@ -230,6 +234,41 @@ The data sent to your n8n webhook:
   }
 }
 ```
+
+## Project structure
+
+```text
+server.js        Express routes, pipeline orchestration, and in-memory scheduling
+youtube.js       YouTube oEmbed, transcript, and channel scraping
+tiktok.js        RapidAPI TikTok integration
+instagram.js     RapidAPI Instagram integration
+storytelling.js  Anthropic analysis and strategy generation
+n8n.js            n8n webhook delivery helpers
+.env.example      Environment variable template
+```
+
+## Security and operational considerations
+
+- Keep `.env` out of version control and rotate keys if they are exposed.
+- The API currently has no authentication or rate limiting; run it behind a trusted network boundary or add those controls before public deployment.
+- Request bodies should be limited and validated before exposing the service to untrusted clients.
+- Scraping behavior depends on third-party services, their terms, rate limits, and response formats.
+- Scheduled jobs are held in process memory and are lost when the Node.js process restarts.
+- Raw upstream error messages are returned by several routes; production deployments should log detailed errors server-side and return sanitized responses.
+
+## Validation
+
+```bash
+npm ci
+node --check server.js
+node --check youtube.js
+node --check tiktok.js
+node --check instagram.js
+node --check storytelling.js
+node --check n8n.js
+```
+
+No live scraping or Claude/n8n request is performed by these checks.
 
 ---
 
