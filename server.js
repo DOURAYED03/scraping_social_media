@@ -5,10 +5,10 @@ require('dotenv').config();
 const express = require('express');
 const cron = require('node-cron');
 
-const youtube = require('./scrapers/youtube');
-const tiktok = require('./scrapers/tiktok');
-const instagram = require('./scrapers/instagram');
-const { analyzeVideos, generateStrategyReport } = require('./analysis/storytelling');
+const youtube = require('./youtube');
+const tiktok = require('./tiktok');
+const instagram = require('./instagram');
+const { analyzeVideos, generateStrategyReport } = require('./storytelling');
 const { sendBatchToN8n, streamToN8n } = require('./n8n');
 
 const app = express();
